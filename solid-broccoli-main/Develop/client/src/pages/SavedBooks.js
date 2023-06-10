@@ -17,6 +17,11 @@ const SavedBooks = () => {
   // use this to determine if `useEffect()` hook needs to run again
   const userDataLength = Object.keys(userData).length;
 
+  const userData = data?.me || {};
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   useEffect(() => {
     const getUserData = async () => {
       try {
@@ -25,6 +30,18 @@ const SavedBooks = () => {
         if (!token) {
           return false;
         }
+
+        try {
+          await removeBook({
+            variables: { bookId }
+          });
+          // upon success, remove book's id from localStorage
+          removeBookId(bookId);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    
 
         const response = await getMe(token);
 
